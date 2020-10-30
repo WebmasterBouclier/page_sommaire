@@ -1,0 +1,19 @@
+
+/**
+ * Generic elements
+ */
+
+
+/* Personnalisation Block page_sommaire */
+.AccueilTableau tr:hover {
+	background-color: #b2db7c;
+	/*2020 10 01 Tableau d'accueil avec effet survol
+		Autres possibilités issues du logo :
+			8ed0a2 vert
+			f1e1e1 gris
+			6dccc9 bleu
+			4dd0f0 bleu (bof)
+			5bc8ab vert foncé
+			b2db7c vert du bas bandeau
+		*/
+}

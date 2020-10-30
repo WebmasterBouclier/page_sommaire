@@ -1,0 +1,98 @@
+<?php
+
+
+/**
+ * Implements hook_menu().
+ *
+ * Provides a default page to explain what this module does.
+ */
+function page_sommaire_menu() {
+  $items['examples/page_sommaire'] = array(
+    'page callback' => 'page_sommaire_page',
+    'access callback' => TRUE,
+    'title' => 'Block sur la page d\'accueil pour afficher le menu',
+  );
+  return $items;
+}
+
+
+
+
+/**
+ * Implements hook_block_info().
+ */
+function page_sommaire_block_info() {    
+  $blocks['sommaire_block'] = array(
+    'info' => t('Page de garde de la base de données'), // info: The name of the block.
+	'description'=> t('Block affichant le menu de la page de garde'),
+    'status' => 1, // Sets the block active
+    'region' => 'content', // The place I want the block to be displayed
+	'visibility' => BLOCK_VISIBILITY_LISTED,
+    'roles' => array(
+      'administrator' => '3',
+      'authenticated user' => '2',
+	),
+	'pages' => '<front>', // Adresse of the page to display, or <front>
+ 	'cache' => DRUPAL_NO_CACHE, // this will exclude the block from Drupal cache
+	/*'theme' => $default_theme, // For all themes DOES NOT WORK*/
+  );
+  
+
+  return $blocks;
+}
+
+
+/**
+ * This hook generates the contents of the blocks.
+ */
+function page_sommaire_block_view($delta = '') {
+
+	// get the path of the current module and add the css. Is also used for the pictures below
+	$path = drupal_get_path('module', 'page_sommaire');
+	drupal_add_css($path . '/css/page_sommaire.css', ['group' => CSS_DEFAULT, 'type' => 'file']);
+
+
+
+  switch ($delta) {
+    case 'sommaire_block':
+      Global $user;
+      if($user->uid != '0') {
+        //$block['subject'] = 'Titre du bloc pour un sujet';
+		$block['content'] = '<p><img alt="Logo de la base de données de la paroisse" src="'.$path.'/images/Logo-base de donnees.png'.'" style="height:250px; margin:5px; width:1000px" /></p>'; // Affichage de l'image Logo
+		
+		$block['content'] .= '<p>Bienvenue sur le site '.variable_get('site_name').'.</p>';
+		
+		$block['content'] .= '<p>Vous trouverez ci-dessous les liens vers les différents menus ou pages :</p>';
+		
+		$block['content'] .= '<table style="border-image:none; border:currentColor; width:100%">';
+		
+		$block['content'] .= '<tbody><tr><td>';
+		
+		$block['content'] .= '<table align="left" border="2" cellpadding="1" cellspacing="1" class="AccueilTableau" style="width:700px">';
+		
+		$block['content'] .= '<tbody>';
+		
+		$block['content'] .= '<tr><td><a href="/civicrm">
+		<img alt="Accès à CiviCRM" src="'.$path.'/images/access_civi.png'.'" title="Accès à CiviCRM" style="height:50px; margin:5px; width:50px" /></a></td><td>CiviCRM</td></tr>'; // Bouton d'accès à CiviCRM
+		
+		$block['content'] .= '<tr><td><a href="/node/1"><img alt="Formulaire de saisie Particulier et Foyer" src="'.$path.'/images/form_particulier.png'.'" title="Formulaire pour saisir les Particuliers et les Foyers" style="height:50px; margin:5px; width:50px" /></a></td><td><p>Enregistrement des nouvelles personnes (Particulier &amp; Foyer)<br /><span style="color:rgb(255, 0, 0)"><strong>MERCI d\'utiliser ce lien pour enregistrer de nouvelles personnes.</strong></span></p></td></tr>'; // Bouton d'accès au formulaire Particulier
+		
+		$block['content'] .= '<tr><td><a href="/node/9"><img alt="Formulaire de saisie Organisations" src="'.$path.'/images/form_entreprise.png'.'" title="Formulaire pour saisir les Organisations" style="height:50px; margin:5px; width:50px" /></a></td><td><p>Enregistrement des nouvelles Entreprises ou Organisations<br /><span style="color:rgb(255, 0, 0)"><strong>MERCI d\'utiliser ce lien pour enregistrer de nouvelles Entreprises ou Organisations.</strong></span></p></td></tr>'; // Bouton d'accès au formulaire Entreprise
+		
+		$block['content'] .= '<tr><td><a href="/civicrm/report/instance/43?force=1"><img alt="Dates d\'anniversaires" src="'.$path.'/images/anniversaires.png'.'" title="Liste des dates d\'anniversaires" style="height:50px; margin:5px; width:50px" /></a></td><td>Liste des dates d\'anniversaire</td></tr>'; // Bouton d'accès aux anniversaires
+		
+		$block['content'] .= '<tr><td><a href="/node/7"><img alt="Listes" src="'.$path.'/images/listes.png'.'" title="Listes" style="height:50px; margin:5px; width:50px" /></a><td>Listes</td></td></tr>';
+		
+		$block['content'] .= '<tr><td><p><a href="/node/6"><img alt="Contrôles" src="'.$path.'/images/controles.png'.'" title="Contrôles" style="height:50px; margin:5px; width:50px" /></a></p><p>et <a href="/civicrm/controle-qualite">cliquez ici</a></p></td><td>Contrôles</td></tr>';
+		
+		$block['content'] .= '<tr><td><a href="https://www.activites.lebouclier.fr/system/files/Mode_Emploi_Base_De_Donn%C3%A9es_Paroissiale_CiviCRM.pdf"><img alt="Aide en ligne" src="'.$path.'/images/aide.png'.'" title="Aide en ligne" style="height:50px; margin:5px; width:50px" /></a></td><td>Mode d\'emploi de la base de données</td></tr>';
+		
+		$block['content'] .= '</tbody></table></td></tr></tbody></table>';
+			
+      }
+      break;
+	  
+  }
+  return $block;
+}
+

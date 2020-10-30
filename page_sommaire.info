@@ -1,0 +1,5 @@
+name = Page d'accueil CiviCRM des paroisses (page_sommaire)
+description = Page d'accueil pour les bases de données des paroisses
+core = 7.x
+package = UEPAL
+version = 7.x-0.1
