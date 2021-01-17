@@ -51,14 +51,53 @@ function page_sommaire_block_view($delta = '') {
 	$path = drupal_get_path('module', 'page_sommaire');
 	drupal_add_css($path . '/css/page_sommaire.css', ['group' => CSS_DEFAULT, 'type' => 'file']);
 
+	// Perform bootstrap (to access to CiviCRM)
+		civicrm_initialize();
 
+///////////////////////////////
+// APPELS A L'API V3 CIVICRM //
+///////////////////////////////
+	try {
+	// Données sur l'église (pour affichage du logo)
+		$donneesEglise = civicrm_api3('Domain', 'get', [
+			'field' => "name",
+		]);	
+	}
+	catch (CiviCRM_API3_Exception $e) {
+		$error = $e->getMessage();
+	}
+	
+	// Récupération du nom de l'église
+	$nomEglise = $donneesEglise['values'][1]['name'];	
+
+///////////////////////////
+// CONSTRUCTION DU BLOCK //
+///////////////////////////
 
   switch ($delta) {
     case 'sommaire_block':
       Global $user;
       if($user->uid != '0') {
-        //$block['subject'] = 'Titre du bloc pour un sujet';
-		$block['content'] = '<p><img alt="Logo de la base de données de la paroisse" src="'.$path.'/images/Logo-base de donnees.png'.'" style="height:250px; margin:5px; width:1000px" /></p>'; // Affichage de l'image Logo
+        
+		//////////////////////////////
+		// Choix du logo à afficher //
+		switch ($nomEglise) {
+			case 'Eglise réformée du Bouclier':
+				$imageLogo = 'Logo-base de donnees Bouclier.png';
+				break;
+			case 'Paroisse Saint-Guillaume':
+				$imageLogo = 'Logo-base de donnees Saint Guillaume.png';
+				break;
+			case 'Paroisse de Bischwiller':
+				$imageLogo = 'Logo-base de donnees Bischwiller.png';
+				break;
+			default:
+				$imageLogo = 'Logo-base de donnees Paroisses.png';
+		}
+		
+		///////////////////////////////////////////////////
+		// Construction de la page (en forme de tableau) //
+		$block['content'] = '<p><img alt="Logo de la base de données de la paroisse" src="'.$path.'/images/'.$imageLogo.'" style="height:250px; margin:5px; width:1000px" /></p>'; // Affichage de l'image Logo
 		
 		$block['content'] .= '<p>Bienvenue sur le site '.variable_get('site_name').'.</p>';
 		
